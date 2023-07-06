@@ -1,20 +1,33 @@
-import binascii import
-collectionsimport
-datetime
-from client import Client from
-Crypto.Hash import SHA
-from Crypto.Signature import PKCS1_v1_5
+import hashlib
+import time
+
 class Transaction:
-def init (self, sender, recipient, value):self.sender =
-sender
-self.recipient = recipientself.value = value self.time = datetime.datetime.now()
-def to_dict(self):
-identity = "Genesis" if self.sender = "Genesis" elseself.sender.identity return collections.OrderedDict(
-{
-"sender": identity, "recipient": self.recipient,"value": self.value, "time": self.time,
-} )
-def sign_transaction(self):
-private_key = self.sender._private_keysigner = PKCS1_v1_5.new(private_key)
-h = SHA.new(str(self.to_dict()).encode("utf8")) return binascii.hexlify(signer.sign(h)).decode("ascii")
-Dinesh = Client() Ramesh = Client()
-t = Transaction(Dinesh, Ramesh.identity, 5.0) print("\nTransaction Recipient:\n", t.recipient)# print("\nTransaction Sender:\n", t.sender)
+    def __init__(self, sender, receiver, amount):
+        self.sender = sender
+        self.receiver = receiver
+        self.amount = amount
+        self.timestamp = time.time()
+        self.hash = self.calculate_hash()
+
+    def calculate_hash(self):
+        sha = hashlib.sha256()
+        hash_str = str(self.sender) + str(self.receiver) + str(self.amount) + str(self.timestamp)
+        sha.update(hash_str.encode('utf-8'))
+        return sha.hexdigest()
+
+    def verify_transaction(self):
+        if self.hash != self.calculate_hash():
+            return False
+        return True
+
+# Testing the Transaction class
+if __name__ == '__main__':
+    # Creating some sample transactions
+    transaction1 = Transaction("Alice", "Bob", 10)
+    transaction2 = Transaction("Bob", "Charlie", 5)
+    transaction3 = Transaction("Charlie", "Alice", 3)
+
+    # Verifying transactions
+    print("Transaction 1: ", transaction1.verify_transaction())
+    print("Transaction 2: ", transaction2.verify_transaction())
+    print("Transaction 3: ", transaction3.verify_transaction())
