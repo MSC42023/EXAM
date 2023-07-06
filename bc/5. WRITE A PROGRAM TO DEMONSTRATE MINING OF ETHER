@@ -1,0 +1,54 @@
+package main
+
+import (
+	"context"
+	"fmt"
+	"log"
+	"math/big"
+	"strings"
+	"time"
+
+	"github.com/ethereum/go-ethereum/common"
+	"github.com/ethereum/go-ethereum/ethclient"
+	"github.com/ethereum/go-ethereum/rpc"
+)
+
+func main() {
+	// Establish a connection to the Ethereum client
+	client, err := ethclient.Dial("https://mainnet.infura.io/v3/YOUR_INFURA_PROJECT_ID")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Check if mining is enabled
+	mining, err := client.Miner().Mining(context.Background())
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	if !mining {
+		// Start mining if it's not already enabled
+		err = client.Miner().Start(context.Background())
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		fmt.Println("Mining started...")
+	}
+
+	// Wait for new blocks to be mined
+	sub, err := client.SubscribeNewHead(context.Background(), handleNewBlock)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Keep the program running until interrupted
+	select {}
+}
+
+func handleNewBlock(header *rpc.Header) {
+	fmt.Println("New block mined!")
+	fmt.Printf("Block number: %s\n", header.Number.String())
+	fmt.Printf("Block hash: %s\n", header.Hash().Hex())
+	fmt.Println(strings.Repeat("-", 40))
+}
