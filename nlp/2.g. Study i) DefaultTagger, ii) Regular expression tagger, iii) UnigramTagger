@@ -1,0 +1,54 @@
+i) DefaultTagger
+code:
+import nltk
+from nltk.tag import DefaultTagger
+exptagger = DefaultTagger('NN')
+from nltk.corpus import treebank
+testsentences = treebank.tagged_sents() [1000:]
+print(exptagger.evaluate (testsentences))
+#Tagging a list of sentences
+import nltk
+from nltk.tag import DefaultTagger
+exptagger = DefaultTagger('NN')
+print(exptagger.tag_sents([['Hi', ','], ['How', 'are', 'you', '?']]))
+
+
+ii) Regular expression tagger, 
+code:
+from nltk.corpus import brown
+from nltk.tag import RegexpTagger
+test_sent = brown.sents(categories='news')[0]
+regexp_tagger = RegexpTagger(
+ [(r'^-?[0-9]+(.[0-9]+)?$', 'CD'), # cardinal numbers
+ (r'(The|the|A|a|An|an)$', 'AT'), # articles
+ (r'.*able$', 'JJ'), # adjectives
+ (r'.*ness$', 'NN'), # nouns formed from adjectives
+ (r'.*ly$', 'RB'), # adverbs
+ (r'.*s$', 'NNS'), # plural nouns
+ (r'.*ing$', 'VBG'), # gerunds
+ (r'.*ed$', 'VBD'), # past tense verbs
+ (r'.*', 'NN') # nouns (default)
+])
+print(regexp_tagger)
+print(regexp_tagger.tag(test_sent))
+
+unigram:
+# Loading Libraries
+from nltk.tag import UnigramTagger
+from nltk.corpus import treebank
+# Training using first 10 tagged sentences of the treebank corpus as data.
+# Using data
+train_sents = treebank.tagged_sents()[:10]
+ 
+# Initializing
+tagger = UnigramTagger(train_sents)
+ 
+# Lets see the first sentence 
+# (of the treebank corpus) as list 
+print(treebank.sents()[0])
+print('\n',tagger.tag(treebank.sents()[0]))
+#Finding the tagged results after training.
+tagger.tag(treebank.sents()[0])
+#Overriding the context model
+tagger = UnigramTagger(model ={'Pierre': 'NN'})
+print('\n',tagger.tag(treebank.sents()[0]))
