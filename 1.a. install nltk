@@ -1,0 +1,11 @@
+. Select the advanced options
+2. Give a Custom install location. Keep the default folder as c:\Program 
+files\Python39
+3. Click Install
+Click Close button once install is done.
+Step 7) open command prompt window and run the following commands:
+C:\Users\Beena Kapadia>pip install --upgrade pip
+C:\Users\Beena Kapadia> pip install --user -U nltk
+C:\Users\Beena Kapadia> >pip install --user -U numpy
+C:\Users\Beena Kapadia>python
+>>> import nltk
